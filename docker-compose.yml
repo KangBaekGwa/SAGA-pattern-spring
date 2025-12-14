@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # Zookeeper for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: saga-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-logs:/var/lib/zookeeper/log
+    networks:
+      - saga-network
+
+  # Kafka Message Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: saga-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - saga-network
+
+  # MySQL - Orchestration Service
+  mysql-orchestration:
+    image: mysql:8.0
+    container_name: mysql-orchestration
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: saga
+      MYSQL_USER: baekgwa
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql-orchestration-data:/var/lib/mysql
+    networks:
+      - saga-network
+
+  # MySQL - Account Service
+  mysql-transfer:
+    image: mysql:8.0
+    container_name: mysql-account
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: saga
+      MYSQL_USER: baekgwa
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql-account-data:/var/lib/mysql
+    networks:
+      - saga-network
+
+  # MySQL - Notification Service
+  mysql-notification:
+    image: mysql:8.0
+    container_name: mysql-notification
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: saga
+      MYSQL_USER: baekgwa
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql-notification-data:/var/lib/mysql
+    networks:
+      - saga-network
+
+networks:
+  saga-network:
+    driver: bridge
+
+volumes:
+  zookeeper-data:
+  zookeeper-logs:
+  kafka-data:
+  mysql-orchestration-data:
+  mysql-account-data:
+  mysql-notification-data:

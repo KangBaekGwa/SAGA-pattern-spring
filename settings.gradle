@@ -1,0 +1,6 @@
+rootProject.name = 'distribute-transaction-saga'
+
+include 'orchestration'
+include 'account'
+include 'common'
+include 'notification'

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: account-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3310/saga
+    username: baekgwa
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+      open-in-view: false
+
+server:
+  port: 8082
