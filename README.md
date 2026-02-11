@@ -2,6 +2,11 @@
 - 멀티 모듈 구성
 - 계좌 이체 예제
 
+전체 시스템 구성
+<img width="910" height="812" alt="image" src="https://github.com/user-attachments/assets/37fe9fdd-5e2e-4c78-9a19-ad1718f661bb" />
+
+단 내용 중, 알림 전송은 실제로 구현되지 않음
+
 ---
 
 ## 관련 글
